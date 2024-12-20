@@ -1,0 +1,146 @@
+package com.example.lab2
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.lab2.ui.theme.Lab2Theme
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            Lab2Theme {
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    Lab2App(modifier = Modifier.padding(innerPadding))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun Lab2App(modifier: Modifier = Modifier) {
+    Column(modifier = modifier.padding(16.dp)) {
+        // Part 1: Working with Data Types
+        val age = remember { mutableStateOf(18) }
+        val height = remember { mutableStateOf(1.75) }
+        val isStudent = remember { mutableStateOf(true) }
+        val name = remember { mutableStateOf("Эльдана") }
+
+        Text("Name: ${name.value}")
+        Text("Age: ${age.value}")
+        Text("Height: ${height.value} meters")
+        Text("Is Student: ${isStudent.value}")
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Part 2: Conditional Statements
+        Text("Part 2: Conditional Statements")
+        val ageMessage = when {
+            age.value < 18 -> "You are a minor."
+            age.value in 18..65 -> "You are an adult."
+            else -> "You are a senior."
+        }
+        Text(ageMessage)
+
+        val lifeStage = when {
+            age.value in 0..5 -> "You are a toddler."
+            age.value in 6..12 -> "You are a child."
+            age.value in 13..17 -> "You are a teenager."
+            age.value in 18..64 -> "You are an adult."
+            age.value >= 65 -> "You are a senior."
+            else -> "Invalid age."
+        }
+        Text(lifeStage)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Part 3: Logical Operators
+        Text("Part 3: Logical Operators")
+        val studentMessage = when {
+            isStudent.value && age.value in 18..65 -> "You are an adult student."
+            isStudent.value && (age.value < 18 || age.value > 65) -> "You are a student but not an adult."
+            else -> "You are not a student."
+        }
+        Text(studentMessage)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Part 4: Loop Constructs
+        Text("Part 4: Loop Constructs")
+        Text("For Loop:")
+        for (i in 1..10) {
+            Text("Number: $i")
+        }
+
+        Text("While Loop:")
+        var counter = 10
+        while (counter > 0) {
+            Text("Number: $counter")
+            counter--
+        }
+
+        Text("Repeat-While Loop:")
+        var repeatCounter = 0
+        do {
+            Text("Enter a number (Simulated): $repeatCounter")
+            repeatCounter++
+        } while (repeatCounter < 5) // Simulating user stopping after 5 iterations
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Part 5: Mini Calculator
+        Text("Part 5: Mini Calculator")
+        var number1 by remember { mutableStateOf(0.0) }
+        var number2 by remember { mutableStateOf(0.0) }
+        var operation by remember { mutableStateOf("+") }
+        var result by remember { mutableStateOf(0.0) }
+
+        Row(modifier = Modifier.fillMaxWidth()) {
+            TextField(value = number1.toString(), onValueChange = {
+                number1 = it.toDoubleOrNull() ?: 0.0
+            }, label = { Text("Number 1") })
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            TextField(value = number2.toString(), onValueChange = {
+                number2 = it.toDoubleOrNull() ?: 0.0
+            }, label = { Text("Number 2") })
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        TextField(value = operation, onValueChange = { operation = it }, label = { Text("Operation (+, -, *, /)") })
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(onClick = {
+            result = when (operation) {
+                "+" -> number1 + number2
+                "-" -> number1 - number2
+                "*" -> number1 * number2
+                "/" -> if (number2 != 0.0) number1 / number2 else Double.NaN
+                else -> Double.NaN
+            }
+        }) {
+            Text("Calculate")
+        }
+
+        Text("Result: $result")
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun Lab2Preview() {
+    Lab2Theme {
+        Lab2App()
+    }
+}
